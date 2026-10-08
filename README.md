@@ -1,16 +1,67 @@
-# React + Vite
+# BookSales
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi tiga halaman: Home, Team, dan Contact.
 
-Currently, two official plugins are available:
+## Teknologi
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- [React](https://react.dev/)
+- [Vite](https://vite.dev/)
+- [Bootstrap 5](https://getbootstrap.com/) untuk tampilan
+- [React Router](https://reactrouter.com/) untuk navigasi antarhalaman
+- [Oxlint](https://oxc.rs/docs/guide/usage/linter) untuk linting
 
-## React Compiler
+## Halaman
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Halaman | Alamat | Isi |
+|---|---|---|
+| Home | `/` | Banner sambutan dan daftar buku terlaris |
+| Team | `/team` | Profil anggota tim |
+| Contact | `/contact` | Informasi kontak dan form pesan |
 
-## Expanding the Oxlint configuration
+## Cara Menjalankan
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+1. Clone repository ini:
+
+```bash
+   git clone https://github.com/JustCallMeFarr/MateriReact.git
+   cd MateriReact
+```
+
+2. Pasang dependensi:
+
+```bash
+   npm install
+```
+
+3. Jalankan server development:
+
+```bash
+   npm run dev
+```
+
+4. Buka `http://localhost:5173/` di browser.
+
+## Perintah Lain
+
+```bash
+npm run build     # build untuk production
+npm run preview   # pratinjau hasil build
+```
+
+## Struktur Folder
+
+```
+src/
+├── components/
+│   └── Header.jsx
+├── pages/
+│   ├── Home.jsx
+│   ├── Team.jsx
+│   └── Contact.jsx
+├── App.jsx
+└── main.jsx
+```
+
+## Pembuat
+
+Dibuat oleh JustCallMeFarr.
