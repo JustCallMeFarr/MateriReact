@@ -17,6 +17,18 @@ Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi
 | Home | `/` | Banner sambutan dan daftar buku terlaris |
 | Team | `/team` | Profil anggota tim |
 | Contact | `/contact` | Informasi kontak dan form pesan |
+| Not Found | alamat lain | Halaman 404 dengan tombol kembali ke beranda |
+
+## Routing
+
+Routing memakai React Router dan disusun berdasarkan jenis elemennya:
+
+- **Layout route** (`MainLayout`) membungkus semua halaman dengan Header dan Footer, isi halaman tampil di `<Outlet />`.
+- **Index route** menampilkan Home di alamat `/`.
+- **Route biasa** untuk `team` dan `contact`.
+- **Catch-all route** (`path="*"`) menampilkan halaman 404.
+
+Navigasi memakai `NavLink`, sehingga menu halaman yang sedang dibuka otomatis diberi style aktif.
 
 ## Cara Menjalankan
 
@@ -53,11 +65,16 @@ npm run preview   # pratinjau hasil build
 ```
 src/
 ├── components/
-│   └── Header.jsx
+│   ├── Header.jsx
+│   ├── Header.css
+│   └── Footer.jsx
+├── layouts/
+│   └── MainLayout.jsx
 ├── pages/
 │   ├── Home.jsx
 │   ├── Team.jsx
-│   └── Contact.jsx
+│   ├── Contact.jsx
+│   └── NotFound.jsx
 ├── App.jsx
 └── main.jsx
 ```

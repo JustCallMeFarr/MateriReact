@@ -1,24 +1,34 @@
 import { NavLink } from 'react-router-dom'
+import './Header.css'
+
+const menus = [
+  { to: '/', label: 'Home', end: true },
+  { to: '/team', label: 'Team' },
+  { to: '/contact', label: 'Contact' },
+]
 
 function Header() {
-  const linkClass = ({ isActive }) =>
-    'nav-link px-2' + (isActive ? ' active fw-bold' : '')
-
   return (
-    <header className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <header className="site-header d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4">
       <div className="col-md-3 mb-2 mb-md-0">
-        <NavLink to="/" className="fs-4 fw-bold text-decoration-none">
+        <NavLink to="/" className="brand text-decoration-none">
           📚 BookSales
         </NavLink>
       </div>
 
-      <ul className="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-        <li><NavLink to="/" className={linkClass}>Home</NavLink></li>
-        <li><NavLink to="/team" className={linkClass}>Team</NavLink></li>
-        <li><NavLink to="/contact" className={linkClass}>Contact</NavLink></li>
-      </ul>
+      <nav className="col-12 col-md-auto mb-2 mb-md-0" aria-label="Navigasi utama">
+        <ul className="nav justify-content-center gap-1">
+          {menus.map((m) => (
+            <li key={m.to}>
+              <NavLink to={m.to} end={m.end} className="nav-item-link">
+                {m.label}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
-      <div className="col-md-3 text-end">
+      <div className="col-md-3 text-center text-md-end">
         <button type="button" className="btn btn-outline-primary me-2">Login</button>
         <button type="button" className="btn btn-primary">Sign-up</button>
       </div>
