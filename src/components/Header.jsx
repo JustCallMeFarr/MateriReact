@@ -3,6 +3,7 @@ import './Header.css'
 
 const menus = [
   { to: '/', label: 'Home', end: true },
+  { to: '/books', label: 'Book' },
   { to: '/team', label: 'Team' },
   { to: '/contact', label: 'Contact' },
 ]

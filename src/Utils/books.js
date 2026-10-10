@@ -1,0 +1,77 @@
+// books.js
+const books = [
+  {
+    id: 1,
+    title: "Belajar JavaScript Dasar",
+    author: "Andi Prasetyo",
+    year: 2021,
+    description: "Panduan lengkap untuk pemula yang ingin belajar JavaScript dari nol.",
+    image: "https://picsum.photos/seed/js-dasar/400/250",
+  },
+  {
+    id: 2,
+    title: "React untuk Pemula",
+    author: "Dina Sari",
+    year: 2022,
+    description: "Mengenal konsep dan praktik membuat aplikasi React modern.",
+    image: "https://picsum.photos/seed/react-pemula/400/250",
+  },
+  {
+    id: 3,
+    title: "HTML dan CSS Praktis",
+    author: "Budi Santoso",
+    year: 2020,
+    description: "Membangun tampilan website responsif langkah demi langkah dengan HTML5 dan CSS3.",
+    image: "https://picsum.photos/seed/html-css/400/250",
+  },
+  {
+    id: 4,
+    title: "Node.js untuk Backend",
+    author: "Rizky Ramadhan",
+    year: 2023,
+    description: "Membuat REST API sederhana menggunakan Node.js dan Express dari awal.",
+    image: "https://picsum.photos/seed/nodejs-backend/400/250",
+  },
+  {
+    id: 5,
+    title: "Dasar-Dasar Basis Data",
+    author: "Siti Nurhaliza",
+    year: 2019,
+    description: "Memahami konsep tabel, relasi, dan query SQL untuk menyimpan data dengan rapi.",
+    image: "https://picsum.photos/seed/basis-data/400/250",
+  },
+  {
+    id: 6,
+    title: "Algoritma dan Struktur Data",
+    author: "Agus Wijaya",
+    year: 2021,
+    description: "Melatih logika pemrograman lewat array, stack, queue, dan algoritma pencarian.",
+    image: "https://picsum.photos/seed/algoritma/400/250",
+  },
+  {
+    id: 7,
+    title: "Desain UI/UX untuk Pemula",
+    author: "Maya Anggraini",
+    year: 2022,
+    description: "Prinsip dasar membuat antarmuka yang indah, mudah dipakai, dan nyaman dilihat.",
+    image: "https://picsum.photos/seed/ui-ux/400/250",
+  },
+  {
+    id: 8,
+    title: "Git dan GitHub untuk Kolaborasi",
+    author: "Fajar Nugroho",
+    year: 2023,
+    description: "Cara mengelola versi kode dan bekerja bersama tim memakai branch serta pull request.",
+    image: "https://picsum.photos/seed/git-github/400/250",
+  },
+  {
+    id: 9,
+    title: "Pemrograman Python Dasar",
+    author: "Lestari Putri",
+    year: 2020,
+    description: "Belajar Python dari variabel hingga fungsi lewat contoh kasus sehari-hari.",
+    image: "https://picsum.photos/seed/python-dasar/400/250",
+  },
+];
+
+export default books;
