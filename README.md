@@ -1,6 +1,6 @@
 # BookSales
 
-Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi empat halaman toko (Home, Book, Team, Contact) dan tampilan Admin untuk mengelola genre dan author. Data buku disimpan di `src/Utils/books.js`.
+Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi empat halaman toko (Home, Book, Team, Contact) dan tampilan Admin untuk mengelola (tambah, lihat, edit, hapus) genre dan author. Data buku disimpan di `src/Utils/books.js`.
 
 ## Teknologi
 
@@ -32,12 +32,15 @@ Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi
 - Di halaman Book ada tombol **+ Tambah Buku** yang membuka form. Buku yang disimpan langsung muncul di daftar (memakai hook `useState`).
 - State daftar buku disimpan di `App.jsx`, jadi buku baru muncul di halaman Home dan Book sekaligus. Data akan kembali ke awal jika halaman di-refresh karena belum disimpan ke database.
 
-## Tampilan Admin (Tugas Lanjutan #1)
+## Tampilan Admin (Tugas Lanjutan #1 dan #2)
 
 - Alamat diawali `/admin`, memakai layout sendiri (`AdminLayout`) dengan sidebar.
 - Halaman admin **hanya bisa dibuka oleh user dengan role `admin`** (lihat bagian Login dan Role di bawah). Menu **Admin** di Header hanya tampil untuk admin.
 - **Read**: data genre dan author ditampilkan dalam tabel memakai `map`.
 - **Create**: form di sebelah tabel. Data baru langsung muncul di tabel (memakai `useState`). Nama genre atau author yang sudah ada ditolak dengan pesan error.
+- **Update**: tombol **Edit** di tiap baris mengisi form dengan data baris itu dan baris disorot kuning. Form yang sama dipakai untuk menambah dan mengedit (state `editingId` menentukan modenya). Tombol **Batal** membatalkan edit. Saat edit, nama yang sama dengan miliknya sendiri tidak dianggap ganda.
+- **Delete**: tombol **Hapus** menampilkan konfirmasi "Yakin?" di baris itu (**Ya, hapus** atau **Batal**) sebelum data dihapus dengan `filter`. Jika baris yang sedang diedit dihapus, form dikosongkan.
+- Fungsi `updateGenre`, `deleteGenre`, `updateAuthor`, dan `deleteAuthor` ada di `App.jsx`. Data buku belum terhubung ke genre atau author, jadi mengubah atau menghapusnya tidak memengaruhi daftar buku.
 - Data awal ada di `src/Utils/genres.js` dan `src/Utils/authors.js`. State disimpan di `App.jsx`. Data kembali ke awal jika halaman di-refresh karena belum disimpan ke database.
 
 ## Login dan Role
@@ -69,6 +72,7 @@ Setiap tugas disimpan di branch terpisah:
 | `Tugas2React` | Halaman Home, Team, Contact, routing, dan navigasi |
 | `Tugas3React` | Lanjutan tugas 2: data buku (`Utils/books.js`), halaman Book, dan tombol tambah buku |
 | `TugasLanjutan1` | Lanjutan tugas 3: tampilan Admin untuk read dan create genre serta author, plus login dan role |
+| `TugasLanjutan2` | Lanjutan dari `TugasLanjutan1`: fitur update (edit) dan delete (hapus) genre serta author |
 
 Link langsung ke branch tugas 3:
 https://github.com/JustCallMeFarr/MateriReact/tree/Tugas3React
@@ -123,7 +127,7 @@ npm run dev
 3. Buka `http://localhost:5173/` di browser, atau tahan `Ctrl` lalu klik link yang muncul di terminal. Hasilnya bisa dicek di:
    - `http://localhost:5173/` untuk halaman Home
    - `http://localhost:5173/books` untuk halaman Book (coba klik **+ Tambah Buku**)
-   - `http://localhost:5173/login` untuk login. Pakai akun admin contoh di atas, lalu coba tambah genre dan author di `/admin`
+   - `http://localhost:5173/login` untuk login. Pakai akun admin contoh di atas, lalu coba tambah, edit, dan hapus genre serta author di `/admin`
 
 4. Untuk menghentikan server, tekan `Ctrl + C` di terminal.
 

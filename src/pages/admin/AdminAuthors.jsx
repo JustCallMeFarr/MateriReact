@@ -2,10 +2,22 @@ import { useState } from 'react'
 
 const emptyForm = { name: '', country: '', bio: '' }
 
-function AdminAuthors({ authors, onAddAuthor }) {
-  // form menyimpan isian input, error menyimpan pesan validasi
+function AdminAuthors({ authors, onAddAuthor, onUpdateAuthor, onDeleteAuthor }) {
+  // form: isian input | error: pesan validasi
+  // editingId: id author yang sedang diedit (null = form dalam mode tambah)
+  // confirmId: id author yang sedang menunggu konfirmasi hapus
   const [form, setForm] = useState(emptyForm)
   const [error, setError] = useState('')
+  const [editingId, setEditingId] = useState(null)
+  const [confirmId, setConfirmId] = useState(null)
+
+  const isEditing = editingId !== null
+
+  const resetForm = () => {
+    setForm(emptyForm)
+    setEditingId(null)
+    setError('')
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -13,19 +25,39 @@ function AdminAuthors({ authors, onAddAuthor }) {
     setError('')
   }
 
+  // Tombol Edit: isi form dengan data baris yang dipilih
+  const handleEdit = (author) => {
+    setEditingId(author.id)
+    setForm({ name: author.name, country: author.country, bio: author.bio })
+    setConfirmId(null)
+    setError('')
+  }
+
+  const handleDelete = (id) => {
+    onDeleteAuthor(id)
+    setConfirmId(null)
+    // Kalau author yang sedang diedit dihapus, kosongkan form
+    if (id === editingId) resetForm()
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     const name = form.name.trim()
+    const data = { name, country: form.country.trim(), bio: form.bio.trim() }
 
-    // Cegah nama author ganda (tanpa membedakan huruf besar/kecil)
-    const exists = authors.some((a) => a.name.toLowerCase() === name.toLowerCase())
+    // Cegah nama ganda (tanpa membedakan huruf besar/kecil).
+    // Saat edit, author yang sedang diedit tidak dihitung sebagai "ganda".
+    const exists = authors.some(
+      (a) => a.id !== editingId && a.name.toLowerCase() === name.toLowerCase(),
+    )
     if (exists) {
       setError(`Author "${name}" sudah ada.`)
       return
     }
 
-    onAddAuthor({ name, country: form.country.trim(), bio: form.bio.trim() })
-    setForm(emptyForm)
+    if (isEditing) onUpdateAuthor(editingId, data)
+    else onAddAuthor(data)
+    resetForm()
   }
 
   return (
@@ -34,10 +66,13 @@ function AdminAuthors({ authors, onAddAuthor }) {
       <p className="text-body-secondary mb-4">Kelola data penulis buku.</p>
 
       <div className="row g-4">
-        {/* CREATE: form tambah author */}
+        {/* CREATE dan UPDATE: satu form dipakai untuk dua mode */}
         <div className="col-lg-4">
           <form onSubmit={handleSubmit} className="card shadow-sm border-0">
-            <div className="card-header bg-body fw-semibold">Tambah Author</div>
+            <div className="card-header bg-body fw-semibold d-flex justify-content-between align-items-center">
+              {isEditing ? 'Edit Author' : 'Tambah Author'}
+              {isEditing && <span className="badge text-bg-warning">Mode edit</span>}
+            </div>
             <div className="card-body">
               <div className="mb-3">
                 <label htmlFor="author-name" className="form-label">Nama author</label>
@@ -76,12 +111,21 @@ function AdminAuthors({ authors, onAddAuthor }) {
                   required
                 ></textarea>
               </div>
-              <button type="submit" className="btn btn-primary w-100">Simpan Author</button>
+              <div className="d-flex gap-2">
+                <button type="submit" className="btn btn-primary flex-grow-1">
+                  {isEditing ? 'Simpan Perubahan' : 'Simpan Author'}
+                </button>
+                {isEditing && (
+                  <button type="button" className="btn btn-outline-secondary" onClick={resetForm}>
+                    Batal
+                  </button>
+                )}
+              </div>
             </div>
           </form>
         </div>
 
-        {/* READ: tabel daftar author */}
+        {/* READ: tabel daftar author, dengan tombol Edit dan Hapus di tiap baris */}
         <div className="col-lg-8">
           <div className="card shadow-sm border-0">
             <div className="card-header bg-body d-flex justify-content-between align-items-center">
@@ -96,22 +140,64 @@ function AdminAuthors({ authors, onAddAuthor }) {
                     <th scope="col">Nama</th>
                     <th scope="col">Negara</th>
                     <th scope="col">Bio</th>
+                    <th scope="col" className="text-end" style={{ width: 190 }}>Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
                   {authors.length === 0 ? (
                     <tr>
-                      <td colSpan="4" className="text-center text-body-secondary py-4">
+                      <td colSpan="5" className="text-center text-body-secondary py-4">
                         Belum ada author.
                       </td>
                     </tr>
                   ) : (
                     authors.map((author, index) => (
-                      <tr key={author.id}>
+                      <tr
+                        key={author.id}
+                        className={author.id === editingId ? 'table-warning' : ''}
+                      >
                         <td>{index + 1}</td>
                         <td className="fw-semibold">{author.name}</td>
                         <td>{author.country}</td>
                         <td className="text-body-secondary">{author.bio}</td>
+                        <td className="text-end text-nowrap">
+                          {confirmId === author.id ? (
+                            <>
+                              <span className="small me-2">Yakin?</span>
+                              <button
+                                type="button"
+                                className="btn btn-danger btn-sm me-1"
+                                onClick={() => handleDelete(author.id)}
+                              >
+                                Ya, hapus
+                              </button>
+                              <button
+                                type="button"
+                                className="btn btn-outline-secondary btn-sm"
+                                onClick={() => setConfirmId(null)}
+                              >
+                                Batal
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                type="button"
+                                className="btn btn-outline-primary btn-sm me-1"
+                                onClick={() => handleEdit(author)}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                type="button"
+                                className="btn btn-outline-danger btn-sm"
+                                onClick={() => setConfirmId(author.id)}
+                              >
+                                Hapus
+                              </button>
+                            </>
+                          )}
+                        </td>
                       </tr>
                     ))
                   )}

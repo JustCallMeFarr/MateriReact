@@ -48,6 +48,24 @@ function App() {
     setAuthors((prev) => [...prev, { ...newAuthor, id: nextId(prev) }])
   }
 
+  // UPDATE: ganti isi data yang id-nya cocok, data lain dibiarkan
+  const updateGenre = (id, changes) => {
+    setGenres((prev) => prev.map((g) => (g.id === id ? { ...g, ...changes } : g)))
+  }
+
+  const updateAuthor = (id, changes) => {
+    setAuthors((prev) => prev.map((a) => (a.id === id ? { ...a, ...changes } : a)))
+  }
+
+  // DELETE: simpan semua data kecuali yang id-nya cocok
+  const deleteGenre = (id) => {
+    setGenres((prev) => prev.filter((g) => g.id !== id))
+  }
+
+  const deleteAuthor = (id) => {
+    setAuthors((prev) => prev.filter((a) => a.id !== id))
+  }
+
   return (
     <Routes>
       {/* Layout route: tanpa path, hanya membungkus halaman-halaman di dalamnya */}
@@ -74,8 +92,28 @@ function App() {
         }
       >
         <Route index element={<AdminDashboard books={books} genres={genres} authors={authors} />} />
-        <Route path="genres" element={<AdminGenres genres={genres} onAddGenre={addGenre} />} />
-        <Route path="authors" element={<AdminAuthors authors={authors} onAddAuthor={addAuthor} />} />
+        <Route
+          path="genres"
+          element={
+            <AdminGenres
+              genres={genres}
+              onAddGenre={addGenre}
+              onUpdateGenre={updateGenre}
+              onDeleteGenre={deleteGenre}
+            />
+          }
+        />
+        <Route
+          path="authors"
+          element={
+            <AdminAuthors
+              authors={authors}
+              onAddAuthor={addAuthor}
+              onUpdateAuthor={updateAuthor}
+              onDeleteAuthor={deleteAuthor}
+            />
+          }
+        />
       </Route>
     </Routes>
   )
