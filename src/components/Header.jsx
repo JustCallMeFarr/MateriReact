@@ -6,6 +6,7 @@ const menus = [
   { to: '/books', label: 'Book' },
   { to: '/team', label: 'Team' },
   { to: '/contact', label: 'Contact' },
+  { to: '/admin', label: 'Admin' },
 ]
 
 function Header() {

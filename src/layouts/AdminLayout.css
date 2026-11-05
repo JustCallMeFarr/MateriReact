@@ -1,0 +1,51 @@
+.admin-shell {
+  background-color: var(--bs-tertiary-bg);
+}
+
+.admin-sidebar {
+  background-color: #1f2937;
+  color: #e5e7eb;
+}
+
+@media (min-width: 768px) {
+  .admin-sidebar {
+    width: 240px;
+    flex-shrink: 0;
+  }
+}
+
+.admin-brand {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.admin-link {
+  color: #cbd5e1;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-link:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* NavLink otomatis menambahkan class "active" pada menu yang sedang dibuka */
+.admin-link.active {
+  color: #fff;
+  background-color: var(--bs-primary);
+}
+
+.admin-back {
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.admin-back:hover {
+  color: #fff;
+}
+
+.admin-content {
+  min-width: 0;
+}

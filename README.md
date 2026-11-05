@@ -1,6 +1,6 @@
 # BookSales
 
-Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi empat halaman: Home, Book, Team, dan Contact. Data buku disimpan di `src/Utils/books.js`.
+Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi empat halaman toko (Home, Book, Team, Contact) dan tampilan Admin untuk mengelola genre dan author. Data buku disimpan di `src/Utils/books.js`.
 
 ## Teknologi
 
@@ -19,6 +19,9 @@ Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi
 | Team | `/team` | Profil anggota tim |
 | Contact | `/contact` | Informasi kontak dan form pesan |
 | Not Found | alamat lain | Halaman 404 dengan tombol kembali ke beranda |
+| Admin Dashboard | `/admin` | Ringkasan jumlah buku, genre, dan author |
+| Admin Genre | `/admin/genres` | Tabel daftar genre dan form tambah genre |
+| Admin Author | `/admin/authors` | Tabel daftar author dan form tambah author |
 
 ## Data Buku dan Tambah Buku (Tugas 3)
 
@@ -27,6 +30,13 @@ Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi
 - Di halaman Book ada tombol **+ Tambah Buku** yang membuka form. Buku yang disimpan langsung muncul di daftar (memakai hook `useState`).
 - State daftar buku disimpan di `App.jsx`, jadi buku baru muncul di halaman Home dan Book sekaligus. Data akan kembali ke awal jika halaman di-refresh karena belum disimpan ke database.
 
+## Tampilan Admin (Tugas Lanjutan #1)
+
+- Alamat diawali `/admin`, memakai layout sendiri (`AdminLayout`) dengan sidebar. Dari toko, buka lewat menu **Admin** di Header.
+- **Read**: data genre dan author ditampilkan dalam tabel memakai `map`.
+- **Create**: form di sebelah tabel. Data baru langsung muncul di tabel (memakai `useState`). Nama genre atau author yang sudah ada ditolak dengan pesan error.
+- Data awal ada di `src/Utils/genres.js` dan `src/Utils/authors.js`. State disimpan di `App.jsx`. Data kembali ke awal jika halaman di-refresh karena belum disimpan ke database.
+
 ## Routing
 
 Routing memakai React Router dan disusun berdasarkan jenis elemennya:
@@ -34,6 +44,7 @@ Routing memakai React Router dan disusun berdasarkan jenis elemennya:
 - **Layout route** (`MainLayout`) membungkus semua halaman dengan Header dan Footer, isi halaman tampil di `<Outlet />`.
 - **Index route** menampilkan Home di alamat `/`.
 - **Route biasa** untuk `books`, `team`, dan `contact`.
+- **Layout route kedua** (`AdminLayout`, path `admin`) membungkus halaman admin: dashboard (index route), `genres`, dan `authors`.
 - **Catch-all route** (`path="*"`) menampilkan halaman 404.
 
 Navigasi memakai `NavLink`, sehingga menu halaman yang sedang dibuka otomatis diberi style aktif.
@@ -46,6 +57,7 @@ Setiap tugas disimpan di branch terpisah:
 |---|---|
 | `Tugas2React` | Halaman Home, Team, Contact, routing, dan navigasi |
 | `Tugas3React` | Lanjutan tugas 2: data buku (`Utils/books.js`), halaman Book, dan tombol tambah buku |
+| `TugasLanjutan1` | Lanjutan tugas 3: tampilan Admin untuk read dan create genre serta author |
 
 Link langsung ke branch tugas 3:
 https://github.com/JustCallMeFarr/MateriReact/tree/Tugas3React
@@ -100,6 +112,7 @@ npm run dev
 3. Buka `http://localhost:5173/` di browser, atau tahan `Ctrl` lalu klik link yang muncul di terminal. Hasilnya bisa dicek di:
    - `http://localhost:5173/` untuk halaman Home
    - `http://localhost:5173/books` untuk halaman Book (coba klik **+ Tambah Buku**)
+   - `http://localhost:5173/admin` untuk tampilan Admin (coba tambah genre dan author)
 
 4. Untuk menghentikan server, tekan `Ctrl + C` di terminal.
 
@@ -121,15 +134,23 @@ src/
 │   ├── Header.css
 │   └── Footer.jsx
 ├── layouts/
-│   └── MainLayout.jsx
+│   ├── MainLayout.jsx
+│   ├── AdminLayout.jsx
+│   └── AdminLayout.css
 ├── pages/
 │   ├── Home.jsx
 │   ├── Book.jsx
 │   ├── Team.jsx
 │   ├── Contact.jsx
-│   └── NotFound.jsx
+│   ├── NotFound.jsx
+│   └── admin/
+│       ├── AdminDashboard.jsx
+│       ├── AdminGenres.jsx
+│       └── AdminAuthors.jsx
 ├── Utils/
-│   └── books.js
+│   ├── books.js
+│   ├── genres.js
+│   └── authors.js
 ├── App.jsx
 └── main.jsx
 ```
