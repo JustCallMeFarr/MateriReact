@@ -19,6 +19,8 @@ Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi
 | Team | `/team` | Profil anggota tim |
 | Contact | `/contact` | Informasi kontak dan form pesan |
 | Not Found | alamat lain | Halaman 404 dengan tombol kembali ke beranda |
+| Login | `/login` | Form login |
+| Sign-up | `/register` | Form pendaftaran akun baru |
 | Admin Dashboard | `/admin` | Ringkasan jumlah buku, genre, dan author |
 | Admin Genre | `/admin/genres` | Tabel daftar genre dan form tambah genre |
 | Admin Author | `/admin/authors` | Tabel daftar author dan form tambah author |
@@ -32,10 +34,19 @@ Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi
 
 ## Tampilan Admin (Tugas Lanjutan #1)
 
-- Alamat diawali `/admin`, memakai layout sendiri (`AdminLayout`) dengan sidebar. Dari toko, buka lewat menu **Admin** di Header.
+- Alamat diawali `/admin`, memakai layout sendiri (`AdminLayout`) dengan sidebar.
+- Halaman admin **hanya bisa dibuka oleh user dengan role `admin`** (lihat bagian Login dan Role di bawah). Menu **Admin** di Header hanya tampil untuk admin.
 - **Read**: data genre dan author ditampilkan dalam tabel memakai `map`.
 - **Create**: form di sebelah tabel. Data baru langsung muncul di tabel (memakai `useState`). Nama genre atau author yang sudah ada ditolak dengan pesan error.
 - Data awal ada di `src/Utils/genres.js` dan `src/Utils/authors.js`. State disimpan di `App.jsx`. Data kembali ke awal jika halaman di-refresh karena belum disimpan ke database.
+
+## Login dan Role
+
+- **Login** (`/login`) dan **Sign-up** (`/register`) memakai `AuthContext` (`src/context/`) yang membagikan data user ke semua halaman lewat hook `useAuth()`.
+- Tiap akun punya `role`. Akun baru dari Sign-up otomatis dengan role `user`. Akun admin contoh: `admin@booksales.com` / `admin123`.
+- `ProtectedRoute` membungkus route `/admin`: belum login diarahkan ke `/login`, login tapi bukan admin melihat halaman 403.
+- Header menampilkan tombol Login dan Sign-up, atau nama user dan tombol Logout setelah login.
+- Belum ada backend. Akun dan sesi login disimpan di `localStorage` browser (password tersimpan apa adanya), jadi hanya untuk latihan dan tidak aman untuk aplikasi sungguhan.
 
 ## Routing
 
@@ -43,8 +54,8 @@ Routing memakai React Router dan disusun berdasarkan jenis elemennya:
 
 - **Layout route** (`MainLayout`) membungkus semua halaman dengan Header dan Footer, isi halaman tampil di `<Outlet />`.
 - **Index route** menampilkan Home di alamat `/`.
-- **Route biasa** untuk `books`, `team`, dan `contact`.
-- **Layout route kedua** (`AdminLayout`, path `admin`) membungkus halaman admin: dashboard (index route), `genres`, dan `authors`.
+- **Route biasa** untuk `books`, `team`, `contact`, `login`, dan `register`.
+- **Layout route kedua** (`AdminLayout`, path `admin`, dibungkus `ProtectedRoute`) membungkus halaman admin: dashboard (index route), `genres`, dan `authors`.
 - **Catch-all route** (`path="*"`) menampilkan halaman 404.
 
 Navigasi memakai `NavLink`, sehingga menu halaman yang sedang dibuka otomatis diberi style aktif.
@@ -57,7 +68,7 @@ Setiap tugas disimpan di branch terpisah:
 |---|---|
 | `Tugas2React` | Halaman Home, Team, Contact, routing, dan navigasi |
 | `Tugas3React` | Lanjutan tugas 2: data buku (`Utils/books.js`), halaman Book, dan tombol tambah buku |
-| `TugasLanjutan1` | Lanjutan tugas 3: tampilan Admin untuk read dan create genre serta author |
+| `TugasLanjutan1` | Lanjutan tugas 3: tampilan Admin untuk read dan create genre serta author, plus login dan role |
 
 Link langsung ke branch tugas 3:
 https://github.com/JustCallMeFarr/MateriReact/tree/Tugas3React
@@ -112,7 +123,7 @@ npm run dev
 3. Buka `http://localhost:5173/` di browser, atau tahan `Ctrl` lalu klik link yang muncul di terminal. Hasilnya bisa dicek di:
    - `http://localhost:5173/` untuk halaman Home
    - `http://localhost:5173/books` untuk halaman Book (coba klik **+ Tambah Buku**)
-   - `http://localhost:5173/admin` untuk tampilan Admin (coba tambah genre dan author)
+   - `http://localhost:5173/login` untuk login. Pakai akun admin contoh di atas, lalu coba tambah genre dan author di `/admin`
 
 4. Untuk menghentikan server, tekan `Ctrl + C` di terminal.
 
@@ -130,9 +141,14 @@ npm run preview   # pratinjau hasil build
 src/
 ├── components/
 │   ├── BookCard.jsx
+│   ├── ProtectedRoute.jsx
 │   ├── Header.jsx
 │   ├── Header.css
 │   └── Footer.jsx
+├── context/
+│   ├── AuthContext.js
+│   ├── AuthProvider.jsx
+│   └── useAuth.js
 ├── layouts/
 │   ├── MainLayout.jsx
 │   ├── AdminLayout.jsx
@@ -140,6 +156,8 @@ src/
 ├── pages/
 │   ├── Home.jsx
 │   ├── Book.jsx
+│   ├── Login.jsx
+│   ├── Register.jsx
 │   ├── Team.jsx
 │   ├── Contact.jsx
 │   ├── NotFound.jsx

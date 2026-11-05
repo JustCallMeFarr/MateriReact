@@ -7,6 +7,9 @@ import Book from './pages/Book'
 import Team from './pages/Team'
 import Contact from './pages/Contact'
 import NotFound from './pages/NotFound'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import ProtectedRoute from './components/ProtectedRoute'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminGenres from './pages/admin/AdminGenres'
 import AdminAuthors from './pages/admin/AdminAuthors'
@@ -54,12 +57,22 @@ function App() {
         <Route path="books" element={<Book books={books} onAddBook={addBook} />} />
         <Route path="team" element={<Team />} />
         <Route path="contact" element={<Contact />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
         {/* Catch-all route: alamat yang tidak dikenal */}
         <Route path="*" element={<NotFound />} />
       </Route>
 
-      {/* Tampilan Admin: layout sendiri dengan sidebar, semua alamatnya diawali /admin */}
-      <Route path="admin" element={<AdminLayout />}>
+      {/* Tampilan Admin: layout sendiri dengan sidebar, semua alamatnya diawali /admin.
+          Dibungkus ProtectedRoute: hanya user yang login dengan role admin yang boleh masuk. */}
+      <Route
+        path="admin"
+        element={
+          <ProtectedRoute role="admin">
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<AdminDashboard books={books} genres={genres} authors={authors} />} />
         <Route path="genres" element={<AdminGenres genres={genres} onAddGenre={addGenre} />} />
         <Route path="authors" element={<AdminAuthors authors={authors} onAddAuthor={addAuthor} />} />

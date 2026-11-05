@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import useAuth from '../context/useAuth'
 import './AdminLayout.css'
 
 const menus = [
@@ -10,6 +11,14 @@ const menus = [
 // Layout khusus Admin: sidebar di kiri, isi halaman di <Outlet />.
 // Terpisah dari MainLayout, jadi tidak memakai Header dan Footer toko.
 function AdminLayout() {
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
+
   return (
     <div className="admin-shell d-flex flex-column flex-md-row min-vh-100">
       <aside className="admin-sidebar p-3">
@@ -33,6 +42,13 @@ function AdminLayout() {
         <NavLink to="/" className="admin-back d-inline-block mt-4 text-decoration-none">
           ← Kembali ke toko
         </NavLink>
+
+        <div className="admin-user mt-4 pt-3 border-top border-secondary small">
+          <div className="text-truncate">Masuk sebagai <strong>{user?.name}</strong></div>
+          <button type="button" className="btn btn-outline-light btn-sm mt-2" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </aside>
 
       <main className="admin-content flex-grow-1 p-3 p-md-4">
