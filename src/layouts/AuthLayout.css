@@ -1,0 +1,38 @@
+.auth-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #e0f2fe 100%);
+}
+
+.auth-card {
+  max-width: 980px;
+  border-radius: 1.25rem;
+}
+
+.auth-aside {
+  background: linear-gradient(160deg, #1d4ed8 0%, #4338ca 60%, #6d28d9 100%);
+}
+
+.auth-brand {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.auth-aside-text {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.auth-perk-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.16);
+}
+
+@media (min-width: 992px) {
+  .auth-aside {
+    min-height: 640px;
+  }
+}

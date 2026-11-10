@@ -19,8 +19,8 @@ Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi
 | Team | `/team` | Profil anggota tim |
 | Contact | `/contact` | Informasi kontak dan form pesan |
 | Not Found | alamat lain | Halaman 404 dengan tombol kembali ke beranda |
-| Login | `/login` | Form login |
-| Sign-up | `/register` | Form pendaftaran akun baru |
+| Registrasi | `/register` | Form pendaftaran akun baru (nama lengkap, email, username, password) |
+| Login | `/login` | Form login dengan email atau username |
 | Admin Dashboard | `/admin` | Ringkasan jumlah buku, genre, dan author |
 | Admin Genre | `/admin/genres` | Tabel daftar genre dan form tambah genre |
 | Admin Author | `/admin/authors` | Tabel daftar author dan form tambah author |
@@ -35,7 +35,7 @@ Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi
 ## Tampilan Admin (Tugas Lanjutan #1 dan #2)
 
 - Alamat diawali `/admin`, memakai layout sendiri (`AdminLayout`) dengan sidebar.
-- Halaman admin **hanya bisa dibuka oleh user dengan role `admin`** (lihat bagian Login dan Role di bawah). Menu **Admin** di Header hanya tampil untuk admin.
+- Halaman admin **hanya bisa dibuka oleh user dengan role `admin`** (lihat bagian Registrasi, Login, dan Role di bawah). Menu **Admin** di Header hanya tampil untuk admin.
 - **Read**: data genre dan author ditampilkan dalam tabel memakai `map`.
 - **Create**: form di sebelah tabel. Data baru langsung muncul di tabel (memakai `useState`). Nama genre atau author yang sudah ada ditolak dengan pesan error.
 - **Update**: tombol **Edit** di tiap baris mengisi form dengan data baris itu dan baris disorot kuning. Form yang sama dipakai untuk menambah dan mengedit (state `editingId` menentukan modenya). Tombol **Batal** membatalkan edit. Saat edit, nama yang sama dengan miliknya sendiri tidak dianggap ganda.
@@ -43,13 +43,37 @@ Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi
 - Fungsi `updateGenre`, `deleteGenre`, `updateAuthor`, dan `deleteAuthor` ada di `App.jsx`. Data buku belum terhubung ke genre atau author, jadi mengubah atau menghapusnya tidak memengaruhi daftar buku.
 - Data awal ada di `src/Utils/genres.js` dan `src/Utils/authors.js`. State disimpan di `App.jsx`. Data kembali ke awal jika halaman di-refresh karena belum disimpan ke database.
 
-## Login dan Role
+## Registrasi, Login, dan Role (Tugas Lanjutan #3)
 
-- **Login** (`/login`) dan **Sign-up** (`/register`) memakai `AuthContext` (`src/context/`) yang membagikan data user ke semua halaman lewat hook `useAuth()`.
-- Tiap akun punya `role`. Akun baru dari Sign-up otomatis dengan role `user`. Akun admin contoh: `admin@booksales.com` / `admin123`.
+**Registrasi** (`/register`)
+- Field: **nama lengkap**, **email**, **username**, **password**, dan ulangi password.
+- Validasi sederhana, pesan error tampil per field di bawah kolomnya (setelah kolom disentuh atau tombol **Daftar** ditekan):
+  - semua field wajib diisi
+  - nama minimal 3 karakter dan hanya huruf
+  - format email valid
+  - username 4-20 karakter, diawali huruf, hanya huruf, angka, dan underscore
+  - password minimal 8 karakter dengan kombinasi huruf dan angka, serta harus sama dengan ulangi password
+  - email atau username yang sudah terdaftar ditolak
+- Ada tombol **Lihat/Sembunyi** pada kolom password dan indikator kekuatan password.
+- Tampilan responsif: panel sambutan dan form berdampingan di layar lebar, bertumpuk di layar kecil.
+- Setelah berhasil, pengguna diarahkan ke halaman login dengan username yang sudah terisi.
+
+**Login** (`/login`)
+- Bisa memakai **email atau username**. Akun admin contoh: `admin` (atau `admin@booksales.com`) dengan password `admin123`.
+
+**Role dan proteksi**
+- `AuthContext` (`src/context/`) membagikan data user ke semua halaman lewat hook `useAuth()`.
+- Tiap akun punya `role`. Akun baru dari registrasi otomatis memakai role `user`.
 - `ProtectedRoute` membungkus route `/admin`: belum login diarahkan ke `/login`, login tapi bukan admin melihat halaman 403.
-- Header menampilkan tombol Login dan Sign-up, atau nama user dan tombol Logout setelah login.
+- Header menampilkan tombol Login dan Sign-up, atau nama user dan tombol Logout setelah login. Logout dari sidebar admin lewat halaman `/logout`.
 - Belum ada backend. Akun dan sesi login disimpan di `localStorage` browser (password tersimpan apa adanya), jadi hanya untuk latihan dan tidak aman untuk aplikasi sungguhan.
+
+**Struktur kode registrasi**
+- `Utils/validators.js`: aturan validasi berupa fungsi-fungsi murni.
+- `components/form/FormField.jsx`: kolom isian (label, input, petunjuk, error) yang dipakai ulang di form login dan registrasi.
+- `components/form/PasswordStrength.jsx`: indikator kekuatan password.
+- `layouts/AuthLayout.jsx`: layout bersama halaman login dan registrasi.
+- `pages/Register.jsx` dan `pages/Login.jsx`: halaman form.
 
 ## Routing
 
@@ -57,7 +81,8 @@ Routing memakai React Router dan disusun berdasarkan jenis elemennya:
 
 - **Layout route** (`MainLayout`) membungkus semua halaman dengan Header dan Footer, isi halaman tampil di `<Outlet />`.
 - **Index route** menampilkan Home di alamat `/`.
-- **Route biasa** untuk `books`, `team`, `contact`, `login`, dan `register`.
+- **Route biasa** untuk `books`, `team`, dan `contact`.
+- **Layout route ketiga** (`AuthLayout`) membungkus halaman `login` dan `register`.
 - **Layout route kedua** (`AdminLayout`, path `admin`, dibungkus `ProtectedRoute`) membungkus halaman admin: dashboard (index route), `genres`, dan `authors`.
 - **Catch-all route** (`path="*"`) menampilkan halaman 404.
 
@@ -73,6 +98,7 @@ Setiap tugas disimpan di branch terpisah:
 | `Tugas3React` | Lanjutan tugas 2: data buku (`Utils/books.js`), halaman Book, dan tombol tambah buku |
 | `TugasLanjutan1` | Lanjutan tugas 3: tampilan Admin untuk read dan create genre serta author, plus login dan role |
 | `TugasLanjutan2` | Lanjutan dari `TugasLanjutan1`: fitur update (edit) dan delete (hapus) genre serta author |
+| `TugasLanjutan3` | Lanjutan dari `TugasLanjutan2`: fitur registrasi pengguna (form, validasi, tampilan responsif) dan penyesuaian login |
 
 Link langsung ke branch tugas 3:
 https://github.com/JustCallMeFarr/MateriReact/tree/Tugas3React
@@ -127,7 +153,8 @@ npm run dev
 3. Buka `http://localhost:5173/` di browser, atau tahan `Ctrl` lalu klik link yang muncul di terminal. Hasilnya bisa dicek di:
    - `http://localhost:5173/` untuk halaman Home
    - `http://localhost:5173/books` untuk halaman Book (coba klik **+ Tambah Buku**)
-   - `http://localhost:5173/login` untuk login. Pakai akun admin contoh di atas, lalu coba tambah, edit, dan hapus genre serta author di `/admin`
+   - `http://localhost:5173/register` untuk registrasi. Coba kosongkan form, isi dengan data tidak valid, lalu daftar dengan data benar
+   - `http://localhost:5173/login` untuk login. Pakai akun yang baru dibuat, atau akun admin contoh (`admin` / `admin123`) lalu coba tambah, edit, dan hapus genre serta author di `/admin`
 
 4. Untuk menghentikan server, tekan `Ctrl + C` di terminal.
 
@@ -146,6 +173,9 @@ src/
 ├── components/
 │   ├── BookCard.jsx
 │   ├── ProtectedRoute.jsx
+│   ├── form/
+│   │   ├── FormField.jsx
+│   │   └── PasswordStrength.jsx
 │   ├── Header.jsx
 │   ├── Header.css
 │   └── Footer.jsx
@@ -156,12 +186,15 @@ src/
 ├── layouts/
 │   ├── MainLayout.jsx
 │   ├── AdminLayout.jsx
-│   └── AdminLayout.css
+│   ├── AdminLayout.css
+│   ├── AuthLayout.jsx
+│   └── AuthLayout.css
 ├── pages/
 │   ├── Home.jsx
 │   ├── Book.jsx
 │   ├── Login.jsx
 │   ├── Register.jsx
+│   ├── Logout.jsx
 │   ├── Team.jsx
 │   ├── Contact.jsx
 │   ├── NotFound.jsx
@@ -172,7 +205,8 @@ src/
 ├── Utils/
 │   ├── books.js
 │   ├── genres.js
-│   └── authors.js
+│   ├── authors.js
+│   └── validators.js
 ├── App.jsx
 └── main.jsx
 ```

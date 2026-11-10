@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import AdminLayout from './layouts/AdminLayout'
+import AuthLayout from './layouts/AuthLayout'
 import Home from './pages/Home'
 import Book from './pages/Book'
 import Team from './pages/Team'
@@ -9,6 +10,7 @@ import Contact from './pages/Contact'
 import NotFound from './pages/NotFound'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import Logout from './pages/Logout'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminGenres from './pages/admin/AdminGenres'
@@ -75,11 +77,17 @@ function App() {
         <Route path="books" element={<Book books={books} onAddBook={addBook} />} />
         <Route path="team" element={<Team />} />
         <Route path="contact" element={<Contact />} />
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
         {/* Catch-all route: alamat yang tidak dikenal */}
         <Route path="*" element={<NotFound />} />
       </Route>
+
+      {/* Halaman login dan registrasi: layout sendiri (panel sambutan + form), tanpa Header dan Footer */}
+      <Route element={<AuthLayout />}>
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+      </Route>
+
+      <Route path="logout" element={<Logout />} />
 
       {/* Tampilan Admin: layout sendiri dengan sidebar, semua alamatnya diawali /admin.
           Dibungkus ProtectedRoute: hanya user yang login dengan role admin yang boleh masuk. */}
