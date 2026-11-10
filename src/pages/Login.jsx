@@ -1,11 +1,10 @@
 import { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import useAuth from '../context/useAuth'
 import FormField from '../components/form/FormField'
 
 function Login() {
   const { login } = useAuth()
-  const navigate = useNavigate()
   const location = useLocation()
 
   // Data dari halaman sebelumnya: username yang baru didaftarkan, atau halaman tujuan semula
@@ -24,13 +23,9 @@ function Login() {
   const handleSubmit = (e) => {
     e.preventDefault()
     const result = login(form.identifier, form.password)
-    if (!result.ok) {
-      setError(result.error)
-      return
-    }
-    // Admin ke dashboard admin, user biasa kembali ke halaman asal atau beranda
-    const fallback = result.user.role === 'admin' ? '/admin' : '/'
-    navigate(from ?? fallback, { replace: true })
+    // Kalau berhasil, tidak perlu pindah halaman di sini: GuestRoute melihat user sudah login
+    // dan mengarahkannya ke halaman tujuan semula, atau ke halaman utama sesuai role.
+    if (!result.ok) setError(result.error)
   }
 
   return (

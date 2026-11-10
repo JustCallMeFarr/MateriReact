@@ -1,26 +1,23 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import useAuth from '../context/useAuth'
+import { ROLES } from '../services/authorizationService'
 import './Header.css'
 
+// roles kosong = menu untuk semua orang. Menu dengan roles hanya tampil untuk role itu.
 const menus = [
   { to: '/', label: 'Home', end: true },
   { to: '/books', label: 'Book' },
   { to: '/team', label: 'Team' },
   { to: '/contact', label: 'Contact' },
-  { to: '/admin', label: 'Admin', adminOnly: true },
+  { to: '/profile', label: 'Profil', roles: [ROLES.ADMIN, ROLES.USER] },
+  { to: '/admin', label: 'Admin', roles: [ROLES.ADMIN] },
 ]
 
 function Header() {
-  const { user, logout } = useAuth()
-  const navigate = useNavigate()
+  const { user, can } = useAuth()
 
-  // Menu Admin hanya tampil kalau yang login dengan role admin
-  const visibleMenus = menus.filter((m) => !m.adminOnly || user?.role === 'admin')
-
-  const handleLogout = () => {
-    logout()
-    navigate('/')
-  }
+  // Hanya tampilkan menu yang boleh dibuka oleh user saat ini
+  const visibleMenus = menus.filter((m) => can(m.roles))
 
   return (
     <header className="site-header d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4">
@@ -45,12 +42,11 @@ function Header() {
       <div className="col-md-3 text-center text-md-end">
         {user ? (
           <>
-            <span className="me-2 text-body-secondary">
-              Halo, <strong>{user.name}</strong>
-            </span>
-            <button type="button" className="btn btn-outline-danger btn-sm" onClick={handleLogout}>
-              Logout
-            </button>
+            <Link to="/profile" className="me-2 text-decoration-none">
+              Halo, <strong>{user.name.split(' ')[0]}</strong>
+            </Link>
+            {/* Logout lewat halaman /logout supaya halaman terproteksi tidak salah mengarahkan */}
+            <Link to="/logout" className="btn btn-outline-danger btn-sm">Logout</Link>
           </>
         ) : (
           <>

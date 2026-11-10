@@ -11,7 +11,11 @@ import NotFound from './pages/NotFound'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Logout from './pages/Logout'
+import Profile from './pages/Profile'
+import Forbidden from './pages/Forbidden'
 import ProtectedRoute from './components/ProtectedRoute'
+import GuestRoute from './components/GuestRoute'
+import { ROLES } from './services/authorizationService'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminGenres from './pages/admin/AdminGenres'
 import AdminAuthors from './pages/admin/AdminAuthors'
@@ -77,12 +81,32 @@ function App() {
         <Route path="books" element={<Book books={books} onAddBook={addBook} />} />
         <Route path="team" element={<Team />} />
         <Route path="contact" element={<Contact />} />
+
+        {/* Profil: semua user yang sudah login boleh (admin dan user biasa) */}
+        <Route
+          path="profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        {/* Tujuan redirect kalau role tidak punya akses (403) */}
+        <Route path="forbidden" element={<Forbidden />} />
+
         {/* Catch-all route: alamat yang tidak dikenal */}
         <Route path="*" element={<NotFound />} />
       </Route>
 
-      {/* Halaman login dan registrasi: layout sendiri (panel sambutan + form), tanpa Header dan Footer */}
-      <Route element={<AuthLayout />}>
+      {/* Halaman login dan registrasi: layout sendiri (panel sambutan + form), tanpa Header dan Footer.
+          GuestRoute: khusus tamu, user yang sudah login diarahkan pergi. */}
+      <Route
+        element={
+          <GuestRoute>
+            <AuthLayout />
+          </GuestRoute>
+        }
+      >
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
       </Route>
@@ -94,7 +118,7 @@ function App() {
       <Route
         path="admin"
         element={
-          <ProtectedRoute role="admin">
+          <ProtectedRoute roles={[ROLES.ADMIN]}>
             <AdminLayout />
           </ProtectedRoute>
         }

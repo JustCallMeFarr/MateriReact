@@ -19,6 +19,8 @@ Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi
 | Team | `/team` | Profil anggota tim |
 | Contact | `/contact` | Informasi kontak dan form pesan |
 | Not Found | alamat lain | Halaman 404 dengan tombol kembali ke beranda |
+| Profil | `/profile` | Data akun dan tabel hak akses (semua user yang sudah login) |
+| Forbidden | `/forbidden` | Halaman 403 untuk akun yang role-nya tidak punya akses |
 | Registrasi | `/register` | Form pendaftaran akun baru (nama lengkap, email, username, password) |
 | Login | `/login` | Form login dengan email atau username |
 | Admin Dashboard | `/admin` | Ringkasan jumlah buku, genre, dan author |
@@ -61,19 +63,33 @@ Website toko buku sederhana yang dibuat dengan React dan Vite. Proyek ini berisi
 **Login** (`/login`)
 - Bisa memakai **email atau username**. Akun admin contoh: `admin` (atau `admin@booksales.com`) dengan password `admin123`.
 
-**Role dan proteksi**
-- `AuthContext` (`src/context/`) membagikan data user ke semua halaman lewat hook `useAuth()`.
-- Tiap akun punya `role`. Akun baru dari registrasi otomatis memakai role `user`.
-- `ProtectedRoute` membungkus route `/admin`: belum login diarahkan ke `/login`, login tapi bukan admin melihat halaman 403.
-- Header menampilkan tombol Login dan Sign-up, atau nama user dan tombol Logout setelah login. Logout dari sidebar admin lewat halaman `/logout`.
-- Belum ada backend. Akun dan sesi login disimpan di `localStorage` browser (password tersimpan apa adanya), jadi hanya untuk latihan dan tidak aman untuk aplikasi sungguhan.
-
 **Struktur kode registrasi**
 - `Utils/validators.js`: aturan validasi berupa fungsi-fungsi murni.
 - `components/form/FormField.jsx`: kolom isian (label, input, petunjuk, error) yang dipakai ulang di form login dan registrasi.
 - `components/form/PasswordStrength.jsx`: indikator kekuatan password.
 - `layouts/AuthLayout.jsx`: layout bersama halaman login dan registrasi.
 - `pages/Register.jsx` dan `pages/Login.jsx`: halaman form.
+
+## Hak Akses dan Routing (Tugas Lanjutan #4)
+
+Aplikasi membedakan dua role: **admin** dan **user**. Akun baru dari registrasi otomatis menjadi `user`. Akun admin contoh: `admin` / `admin123`.
+
+| Halaman | Tamu (belum login) | User | Admin |
+|---|---|---|---|
+| `/`, `/books`, `/team`, `/contact` | Boleh | Boleh | Boleh |
+| `/login`, `/register` | Boleh | Diarahkan ke beranda | Diarahkan ke `/admin` |
+| `/profile` | Diarahkan ke `/login` | Boleh | Boleh |
+| `/admin`, `/admin/genres`, `/admin/authors` | Diarahkan ke `/login` | Diarahkan ke `/forbidden` (403) | Boleh |
+
+**Cara kerja**
+- **Service otorisasi** (`src/services/authorizationService.js`): daftar `ROLES`, fungsi `canAccess(user, roles)` untuk mengecek hak akses, `homePathFor(user)` untuk halaman tujuan setelah login, dan `ACCESS_RULES` (daftar aturan akses yang ditampilkan di halaman Profil).
+- **Service autentikasi** (`src/services/authService.js`): login (email atau username), registrasi, logout, dan sesi. Semua akses `localStorage` dikumpulkan di sini. Sesi hanya menyimpan id user, sedangkan role selalu dibaca ulang dari daftar akun.
+- **Context API** (`src/context/`): `AuthProvider` menyimpan user yang login di state, dan `useAuth()` membagikan `user`, `isAdmin`, `can(roles)`, `login`, `register`, dan `logout` ke semua halaman.
+- **`ProtectedRoute`**: pembungkus halaman yang butuh login. Dengan prop `roles` juga membatasi role. Belum login diarahkan ke `/login` (tujuan semula diingat), role tidak cocok diarahkan ke `/forbidden`.
+- **`GuestRoute`**: pembungkus halaman khusus tamu (`/login`, `/register`). User yang sudah login langsung diarahkan pergi.
+- **Navigasi menurut role**: menu di Header disaring dengan `can(roles)`. Menu **Profil** hanya tampil setelah login, menu **Admin** hanya untuk admin.
+- **Logout** lewat halaman `/logout` (`pages/Logout.jsx`) supaya halaman terproteksi tidak salah mengarahkan saat sesi dihapus.
+- Pembatasan ini hanya di sisi tampilan (frontend). Karena data disimpan di `localStorage`, pengguna yang paham bisa mengubahnya lewat browser. Untuk keamanan sungguhan, pengecekan role harus dilakukan juga di backend.
 
 ## Routing
 
@@ -82,7 +98,8 @@ Routing memakai React Router dan disusun berdasarkan jenis elemennya:
 - **Layout route** (`MainLayout`) membungkus semua halaman dengan Header dan Footer, isi halaman tampil di `<Outlet />`.
 - **Index route** menampilkan Home di alamat `/`.
 - **Route biasa** untuk `books`, `team`, dan `contact`.
-- **Layout route ketiga** (`AuthLayout`) membungkus halaman `login` dan `register`.
+- **Layout route ketiga** (`AuthLayout`, dibungkus `GuestRoute`) membungkus halaman `login` dan `register`.
+- **Route terproteksi** `profile` (dibungkus `ProtectedRoute`) berada di dalam `MainLayout`.
 - **Layout route kedua** (`AdminLayout`, path `admin`, dibungkus `ProtectedRoute`) membungkus halaman admin: dashboard (index route), `genres`, dan `authors`.
 - **Catch-all route** (`path="*"`) menampilkan halaman 404.
 
@@ -99,6 +116,7 @@ Setiap tugas disimpan di branch terpisah:
 | `TugasLanjutan1` | Lanjutan tugas 3: tampilan Admin untuk read dan create genre serta author, plus login dan role |
 | `TugasLanjutan2` | Lanjutan dari `TugasLanjutan1`: fitur update (edit) dan delete (hapus) genre serta author |
 | `TugasLanjutan3` | Lanjutan dari `TugasLanjutan2`: fitur registrasi pengguna (form, validasi, tampilan responsif) dan penyesuaian login |
+| `TugasLanjutan4` | Lanjutan dari `TugasLanjutan3`: routing dan hak akses berdasarkan role (service otorisasi, protected route, halaman profil dan 403) |
 
 Link langsung ke branch tugas 3:
 https://github.com/JustCallMeFarr/MateriReact/tree/Tugas3React
@@ -154,6 +172,7 @@ npm run dev
    - `http://localhost:5173/` untuk halaman Home
    - `http://localhost:5173/books` untuk halaman Book (coba klik **+ Tambah Buku**)
    - `http://localhost:5173/register` untuk registrasi. Coba kosongkan form, isi dengan data tidak valid, lalu daftar dengan data benar
+   - `http://localhost:5173/profile` untuk profil. Tanpa login akan diarahkan ke login. Coba juga buka `/admin` dengan akun user biasa (muncul 403) dan dengan akun admin
    - `http://localhost:5173/login` untuk login. Pakai akun yang baru dibuat, atau akun admin contoh (`admin` / `admin123`) lalu coba tambah, edit, dan hapus genre serta author di `/admin`
 
 4. Untuk menghentikan server, tekan `Ctrl + C` di terminal.
@@ -173,6 +192,7 @@ src/
 ├── components/
 │   ├── BookCard.jsx
 │   ├── ProtectedRoute.jsx
+│   ├── GuestRoute.jsx
 │   ├── form/
 │   │   ├── FormField.jsx
 │   │   └── PasswordStrength.jsx
@@ -195,6 +215,8 @@ src/
 │   ├── Login.jsx
 │   ├── Register.jsx
 │   ├── Logout.jsx
+│   ├── Profile.jsx
+│   ├── Forbidden.jsx
 │   ├── Team.jsx
 │   ├── Contact.jsx
 │   ├── NotFound.jsx
@@ -202,6 +224,9 @@ src/
 │       ├── AdminDashboard.jsx
 │       ├── AdminGenres.jsx
 │       └── AdminAuthors.jsx
+├── services/
+│   ├── authService.js
+│   └── authorizationService.js
 ├── Utils/
 │   ├── books.js
 │   ├── genres.js
